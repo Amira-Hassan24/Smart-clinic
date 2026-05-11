@@ -78,17 +78,28 @@ public class AppointmentService {
         return stats;
     }
 
-    public Appointment bookAppointment(Appointment appointment) {
-        if (Boolean.TRUE.equals(appointment.getIsPriority())) {
-            appointment.setStatus(AppointmentStatus.Confirmed);
-            return appointmentRepository.save(appointment);
-        }
-        if (appointmentRepository.existsByDoctorIdAndAppointmentDate(appointment.getDoctor().getId(), appointment.getAppointmentDate())) {
-            throw new RuntimeException("Slot already booked!");
-        }
+   
+
+public Appointment bookAppointment(Appointment appointment) {
+    // Load full Doctor object
+    Doctor doctor = doctorRepository.findById(appointment.getDoctor().getId())
+            .orElseThrow(() -> new RuntimeException("Doctor not found"));
+    appointment.setDoctor(doctor);
+
+    // Load full Patient object
+    Patient patient = patientRepository.findById(appointment.getPatient().getId())
+            .orElseThrow(() -> new RuntimeException("Patient not found"));
+    appointment.setPatient(patient);
+
+    if (Boolean.TRUE.equals(appointment.getIsPriority())) {
+        appointment.setStatus(AppointmentStatus.Confirmed);
         return appointmentRepository.save(appointment);
     }
-
+    if (appointmentRepository.existsByDoctorIdAndAppointmentDate(doctor.getId(), appointment.getAppointmentDate())) {
+        throw new RuntimeException("Slot already booked!");
+    }
+    return appointmentRepository.save(appointment);
+}
     public Appointment updateStatus(Long id, AppointmentStatus status) {
         Appointment app = appointmentRepository.findById(id).orElseThrow();
         app.setStatus(status);

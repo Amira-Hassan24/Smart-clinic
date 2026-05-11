@@ -1,5 +1,4 @@
 package com.smartclinic.scms;
-
 import com.smartclinic.scms.entity.Role;
 import com.smartclinic.scms.entity.User;
 import com.smartclinic.scms.repository.UserRepository;
