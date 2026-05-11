@@ -1,0 +1,9 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: smart-clinic-db
+    environment:
+      MYSQL_DATABASE: smart_clinic_db
+      MYSQL_ROOT_PASSWORD: 20230200-cs#Rania
+    ports:
+      - "3306:3306"
