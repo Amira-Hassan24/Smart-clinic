@@ -1,0 +1,104 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" routerLink="/doctor-dashboard">📊 Dashboard</a>
+      <a class="nav-item active" routerLink="/schedule">📅 My Schedule</a>
+      <a class="nav-item" routerLink="/appointments">🗓️ Appointments</a>
+      <a class="nav-item" routerLink="/queue">🔄 Queue</a>
+      <a class="nav-item" routerLink="/prescriptions">💊 Prescriptions</a>
+      <a class="nav-item" routerLink="/profile">👤 Profile</a>
+      <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+    </nav>
+    <a class="logout-btn" routerLink="/login">🚪 Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>My Schedule</h1>
+        <p>Manage your working hours and availability</p>
+      </div>
+      <button class="btn-add" (click)="showAddForm = !showAddForm">
+        ➕ Add Schedule
+      </button>
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-msg">⚠️ {{ errorMessage }}</div>
+    }
+
+    @if (showAddForm) {
+      <div class="add-form">
+        <h2>Add Working Hours</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Day of Week</label>
+            <select [(ngModel)]="newSchedule.dayOfWeek">
+              @for (day of days; track day) {
+                <option [value]="day">{{ day }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Start Time</label>
+            <input type="time" [(ngModel)]="newSchedule.startTime">
+          </div>
+          <div class="form-group">
+            <label>End Time</label>
+            <input type="time" [(ngModel)]="newSchedule.endTime">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" (click)="addSchedule()">Save Schedule</button>
+          <button class="btn-cancel" (click)="showAddForm = false">Cancel</button>
+        </div>
+      </div>
+    }
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading schedule...</p>
+      </div>
+    } @else {
+      <div class="schedule-grid">
+        @if (schedules.length === 0) {
+          <div class="empty-state">
+            <span>📅</span>
+            <h3>No Schedule Yet</h3>
+            <p>Add your working hours to get started</p>
+          </div>
+        }
+        @for (day of days; track day) {
+          <div class="day-card" [class.has-schedule]="hasSchedule(day)">
+            <div class="day-header">
+              <h3>{{ day }}</h3>
+              @if (hasSchedule(day)) {
+                <span class="available-badge">✅ Available</span>
+              } @else {
+                <span class="off-badge">❌ Off</span>
+              }
+            </div>
+            @if (hasSchedule(day)) {
+              @for (s of getScheduleForDay(day); track s.id) {
+                <div class="schedule-item">
+                  <span>🕐 {{ s.startTime }} - {{ s.endTime }}</span>
+                  <button class="btn-delete" (click)="deleteSchedule(s.id)">🗑️</button>
+                </div>
+              }
+            } @else {
+              <p class="off-text">Day off</p>
+            }
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

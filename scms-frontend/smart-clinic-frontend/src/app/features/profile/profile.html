@@ -1,0 +1,125 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      @if (role === 'ADMIN') {
+        <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/staff">👔 Staff</a>
+        <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+        <a class="nav-item active" routerLink="/profile">👤 Profile</a>
+      }
+      @if (role === 'DOCTOR') {
+        <a class="nav-item" routerLink="/doctor-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/schedule">📅 My Schedule</a>
+        <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+        <a class="nav-item active" routerLink="/profile">👤 Profile</a>
+      }
+      @if (role === 'PATIENT') {
+        <a class="nav-item" routerLink="/patient-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+        <a class="nav-item active" routerLink="/profile">👤 Profile</a>
+      }
+      @if (role === 'RECEPTIONIST') {
+        <a class="nav-item" routerLink="/receptionist-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+        <a class="nav-item active" routerLink="/profile">👤 Profile</a>
+      }
+    </nav>
+    <a class="logout-btn" routerLink="/login">🚪 Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>My Profile</h1>
+      <p>View your account information</p>
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-msg">⚠️ {{ errorMessage }}</div>
+    }
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading profile...</p>
+      </div>
+    } @else {
+      <div class="profile-container">
+        <div class="profile-card">
+          <div class="profile-avatar">
+            @if (role === 'DOCTOR') { <span>👨‍⚕️</span> }
+            @if (role === 'PATIENT') { <span>👤</span> }
+            @if (role === 'ADMIN') { <span>👑</span> }
+            @if (role === 'RECEPTIONIST') { <span>👔</span> }
+          </div>
+          <h2>{{ profile.name || 'N/A' }}</h2>
+          <span class="role-badge">{{ profile.role || role }}</span>
+        </div>
+
+        <div class="profile-info">
+          <div class="info-card">
+            <h3>Personal Information</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Full Name</span>
+                <span class="info-value">{{ profile.name || 'N/A' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ profile.email || 'N/A' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Phone</span>
+                <span class="info-value">{{ profile.phoneNumber || 'N/A' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Role</span>
+                <span class="info-value role">{{ profile.role || role }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Status</span>
+                <span class="info-value status">✅ Active</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-links">
+            <h3>Quick Links</h3>
+            <div class="links-grid">
+              <a routerLink="/settings" class="quick-link">
+                <span>⚙️</span>
+                <p>Settings</p>
+              </a>
+              @if (role === 'DOCTOR') {
+                <a routerLink="/schedule" class="quick-link">
+                  <span>📅</span>
+                  <p>My Schedule</p>
+                </a>
+              }
+              @if (role === 'PATIENT') {
+                <a routerLink="/appointments" class="quick-link">
+                  <span>📋</span>
+                  <p>Appointments</p>
+                </a>
+                <a routerLink="/prescriptions" class="quick-link">
+                  <span>💊</span>
+                  <p>Prescriptions</p>
+                </a>
+              }
+              <a routerLink="/notifications" class="quick-link">
+                <span>🔔</span>
+                <p>Notifications</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </main>
+</div>

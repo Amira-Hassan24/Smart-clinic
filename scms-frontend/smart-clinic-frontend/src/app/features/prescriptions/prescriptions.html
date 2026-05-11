@@ -1,0 +1,110 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      @if (role === 'ADMIN') {
+        <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item" routerLink="/doctors">👨‍⚕️ Doctors</a>
+        <a class="nav-item" routerLink="/patients">🧑‍🤝‍🧑 Patients</a>
+        <a class="nav-item active" routerLink="/prescriptions">💊 Prescriptions</a>
+      }
+      @if (role === 'DOCTOR') {
+        <a class="nav-item" routerLink="/doctor-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item active" routerLink="/prescriptions">💊 Prescriptions</a>
+      }
+      @if (role === 'PATIENT') {
+        <a class="nav-item" routerLink="/patient-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 My Appointments</a>
+        <a class="nav-item active" routerLink="/prescriptions">💊 My Prescriptions</a>
+      }
+      @if (role === 'RECEPTIONIST') {
+        <a class="nav-item" routerLink="/receptionist-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item active" routerLink="/prescriptions">💊 Prescriptions</a>
+      }
+    </nav>
+    <a class="logout-btn" routerLink="/login">🚪 Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Prescriptions</h1>
+        <p>View and manage prescriptions</p>
+      </div>
+      @if (role === 'DOCTOR') {
+        <button class="btn-add" (click)="showAddForm = !showAddForm">
+          ➕ Add Prescription
+        </button>
+      }
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-msg">⚠️ {{ errorMessage }}</div>
+    }
+
+    @if (showAddForm) {
+      <div class="add-form">
+        <h2>Add New Prescription</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Appointment ID</label>
+            <input type="number" [(ngModel)]="newPrescription.appointmentId" placeholder="Appointment ID">
+          </div>
+          <div class="form-group">
+            <label>Diagnosis</label>
+            <input type="text" [(ngModel)]="newPrescription.diagnosis" placeholder="Enter diagnosis">
+          </div>
+          <div class="form-group">
+            <label>Medicines</label>
+            <input type="text" [(ngModel)]="newPrescription.medicines" placeholder="Enter medicines">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" (click)="addPrescription()">Save Prescription</button>
+          <button class="btn-cancel" (click)="showAddForm = false">Cancel</button>
+        </div>
+      </div>
+    }
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading prescriptions...</p>
+      </div>
+    } @else {
+      <div class="prescriptions-list">
+        @if (prescriptions.length === 0) {
+          <div class="empty-state">
+            <span>💊</span>
+            <h3>No Prescriptions Found</h3>
+            <p>Prescriptions will appear here after consultations</p>
+          </div>
+        }
+        @for (presc of prescriptions; track presc.id) {
+          <div class="prescription-card">
+            <div class="presc-icon">💊</div>
+            <div class="presc-info">
+              <h3>Prescription #{{ presc.id }}</h3>
+              <p class="diagnosis">🔍 {{ presc.diagnosis }}</p>
+              <p class="medicines">💊 {{ presc.medicines }}</p>
+              <p class="date">📅 {{ presc.issuedAt | date:'dd MMM yyyy' }}</p>
+            </div>
+            <div class="presc-meta">
+              <span class="badge">Patient #{{ presc.patientId }}</span>
+              <span class="badge doctor">Dr. #{{ presc.doctorId }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

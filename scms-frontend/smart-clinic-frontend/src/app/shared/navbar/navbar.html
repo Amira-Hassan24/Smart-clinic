@@ -1,0 +1,30 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-logo">
+      <span class="logo-icon">🏥</span>
+      <span class="logo-text">Smart <span class="accent">Clinic</span></span>
+    </div>
+
+    <!-- Desktop Menu -->
+    <ul class="navbar-links">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
+      <li><a routerLink="/login">Log in</a></li>
+      <li><a routerLink="/register" class="btn-register">Create Account</a></li>
+    </ul>
+
+    <!-- Mobile Toggle -->
+    <button class="menu-toggle" (click)="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.open]="isMenuOpen">
+    <a routerLink="/" (click)="toggleMenu()">Home</a>
+    <a routerLink="/login" (click)="toggleMenu()">Log in</a>
+    <a routerLink="/register" (click)="toggleMenu()">Create Account</a>
+  </div>
+</nav>

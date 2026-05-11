@@ -1,0 +1,71 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+      <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+      <a class="nav-item" routerLink="/doctors">👨‍⚕️ Doctors</a>
+      <a class="nav-item active" routerLink="/patients">🧑‍🤝‍🧑 Patients</a>
+      <a class="nav-item">💊 Prescriptions</a>
+      <a class="nav-item">🧾 Invoices</a>
+      <a class="nav-item">⚙️ Settings</a>
+    </nav>
+    <button class="logout-btn" routerLink="/login">🚪 Logout</button>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Patients Management</h1>
+        <p>View and manage all registered patients</p>
+      </div>
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-msg">⚠️ {{ errorMessage }}</div>
+    }
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading patients...</p>
+      </div>
+    } @else {
+      <div class="patients-list">
+        @if (patients.length === 0) {
+          <div class="empty-state">
+            <span>🧑‍🤝‍🧑</span>
+            <h3>No Patients Found</h3>
+            <p>No registered patients yet</p>
+          </div>
+        }
+        @for (patient of patients; track patient.id) {
+          <div class="patient-card">
+            <div class="patient-avatar">👤</div>
+            <div class="patient-info">
+              <h3>{{ patient.name }}</h3>
+              <p class="email">📧 {{ patient.email }}</p>
+              <p class="phone">📞 {{ patient.phoneNumber }}</p>
+            </div>
+            <div class="patient-status">
+              <span class="badge" [class.active]="patient.isActive" [class.inactive]="!patient.isActive">
+                {{ patient.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+            <div class="patient-actions">
+              <button class="btn-toggle" (click)="toggleStatus(patient.id)">
+                {{ patient.isActive ? 'Deactivate' : 'Activate' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

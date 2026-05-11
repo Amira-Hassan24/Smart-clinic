@@ -1,0 +1,71 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      @if (role === 'ADMIN') {
+        <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+        <a class="nav-item active" routerLink="/notifications">🔔 Notifications</a>
+        <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+      }
+      @if (role === 'DOCTOR') {
+        <a class="nav-item" routerLink="/doctor-dashboard">📊 Dashboard</a>
+        <a class="nav-item active" routerLink="/notifications">🔔 Notifications</a>
+        <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+      }
+      @if (role === 'PATIENT') {
+        <a class="nav-item" routerLink="/patient-dashboard">📊 Dashboard</a>
+        <a class="nav-item active" routerLink="/notifications">🔔 Notifications</a>
+        <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+      }
+      @if (role === 'RECEPTIONIST') {
+        <a class="nav-item" routerLink="/receptionist-dashboard">📊 Dashboard</a>
+        <a class="nav-item active" routerLink="/notifications">🔔 Notifications</a>
+        <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+      }
+    </nav>
+    <a class="logout-btn" routerLink="/login">🚪 Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Notifications</h1>
+        <p>Stay updated with your clinic activities</p>
+      </div>
+      @if (unreadCount > 0) {
+        <button class="btn-mark-all" (click)="markAllAsRead()">
+          ✅ Mark All as Read ({{ unreadCount }})
+        </button>
+      }
+    </div>
+
+    <div class="notifications-list">
+      @if (notifications.length === 0) {
+        <div class="empty-state">
+          <span>🔔</span>
+          <h3>No Notifications</h3>
+          <p>You're all caught up!</p>
+        </div>
+      }
+
+      @for (notif of notifications; track notif.id) {
+        <div class="notification-card" [class.unread]="!notif.read" (click)="markAsRead(notif.id)">
+          <div class="notif-icon" [class]="notif.type">
+            {{ notif.icon }}
+          </div>
+          <div class="notif-content">
+            <h3>{{ notif.title }}</h3>
+            <p>{{ notif.message }}</p>
+            <span class="notif-time">🕐 {{ notif.time }}</span>
+          </div>
+          @if (!notif.read) {
+            <div class="unread-dot"></div>
+          }
+        </div>
+      }
+    </div>
+  </main>
+</div>

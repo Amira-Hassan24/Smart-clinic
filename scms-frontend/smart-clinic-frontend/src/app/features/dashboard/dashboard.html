@@ -1,0 +1,84 @@
+<div class="dashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+
+    <nav class="sidebar-nav">
+  <a class="nav-item active" routerLink="/dashboard">📊 Dashboard</a>
+  <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+  <a class="nav-item" routerLink="/doctors">👨‍⚕️ Doctors</a>
+  <a class="nav-item" routerLink="/patients">🧑‍🤝‍🧑 Patients</a>
+  <a class="nav-item" routerLink="/prescriptions">💊 Prescriptions</a>
+  <a class="nav-item" routerLink="/invoices">🧾 Invoices</a>
+  <a class="nav-item" routerLink="/settings">⚙️ Settings</a>
+  <a class="nav-item" routerLink="/queue">🔄 Queue</a>
+  <a class="nav-item" routerLink="/staff">👔 Staff</a>
+  <a class="nav-item" routerLink="/notifications">🔔 Notifications</a>
+  <a class="nav-item" routerLink="/profile">👤 Profile</a>
+</nav>
+
+    <button class="logout-btn" (click)="logout()">🚪 Logout</button>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="dashboard-header">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p>Welcome back! Here's what's happening today.</p>
+      </div>
+    </div>
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    } @else {
+      <div class="stats-grid">
+        <div class="stat-card teal">
+          <div class="stat-icon">👨‍⚕️</div>
+          <div class="stat-info">
+            <h3>{{ stats.totalDoctors }}</h3>
+            <p>Total Doctors</p>
+          </div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-icon">🧑‍🤝‍🧑</div>
+          <div class="stat-info">
+            <h3>{{ stats.totalPatients }}</h3>
+            <p>Total Patients</p>
+          </div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <h3>{{ stats.totalAppointments }}</h3>
+            <p>Total Appointments</p>
+          </div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <h3>{{ stats.totalUsers }}</h3>
+            <p>Total Users</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+          <button class="action-btn" routerLink="/doctors">➕ Add Doctor</button>
+          <button class="action-btn" routerLink="/appointments">📅 New Appointment</button>
+          <button class="action-btn" routerLink="/patients">👤 View Patients</button>
+          <button class="action-btn" routerLink="/queue">🔄 Queue</button>
+          <button class="action-btn" routerLink="/staff">👔 Manage Staff</button>
+        </div>
+      </div>
+    }
+  </main>
+</div>

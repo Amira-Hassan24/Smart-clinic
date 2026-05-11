@@ -1,0 +1,126 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+      <a class="nav-item active" routerLink="/appointments">📅 Appointments</a>
+      <a class="nav-item" routerLink="/doctors">👨‍⚕️ Doctors</a>
+      <a class="nav-item" routerLink="/patients">🧑‍🤝‍🧑 Patients</a>
+    </nav>
+    <a class="logout-btn" routerLink="/login">🚪 Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Appointments</h1>
+        <p>Manage all clinic appointments</p>
+      </div>
+      <button class="btn-add" (click)="showAddForm = !showAddForm">
+        ➕ Book Appointment
+      </button>
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-msg">⚠️ {{ errorMessage }}</div>
+    }
+
+    @if (showAddForm) {
+      <div class="add-form">
+        <h2>Book New Appointment</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Doctor</label>
+            <select [(ngModel)]="newAppointment.doctorId">
+              <option [value]="null">Select Doctor</option>
+              @for (doctor of doctors; track doctor.id) {
+                <option [value]="doctor.id">{{ doctor.name }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Patient ID</label>
+            <input type="number" [(ngModel)]="newAppointment.patientId" placeholder="Patient ID">
+          </div>
+          <div class="form-group">
+            <label>Date & Time</label>
+            <input type="datetime-local" [(ngModel)]="newAppointment.appointmentDate">
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select [(ngModel)]="newAppointment.appointmentType">
+              <option value="EXAMINATION">Examination</option>
+              <option value="FOLLOW_UP">Follow Up</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Chief Complaint</label>
+            <input type="text" [(ngModel)]="newAppointment.chiefComplaint" placeholder="Chief complaint">
+          </div>
+          <div class="form-group">
+            <label>Priority</label>
+            <select [(ngModel)]="newAppointment.isPriority">
+              <option [value]="false">Normal</option>
+              <option [value]="true">Priority</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" (click)="bookAppointment()">Book Appointment</button>
+          <button class="btn-cancel" (click)="showAddForm = false">Cancel</button>
+        </div>
+      </div>
+    }
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading appointments...</p>
+      </div>
+    } @else {
+      <div class="appointments-list">
+        @if (appointments.length === 0) {
+          <div class="empty-state">
+            <span>📅</span>
+            <h3>No Appointments Found</h3>
+            <p>Book your first appointment</p>
+          </div>
+        }
+        @for (apt of appointments; track apt.id) {
+          <div class="appointment-card">
+            <div class="apt-info">
+              <h3>Patient #{{ apt.patientId }} → Dr. #{{ apt.doctorId }}</h3>
+              <p>📅 {{ apt.appointmentDate | date:'dd MMM yyyy, hh:mm a' }}</p>
+              <p class="complaint">{{ apt.chiefComplaint || 'No complaint' }}</p>
+              <span class="type-badge">{{ apt.appointmentType }}</span>
+            </div>
+            <div class="apt-status">
+              <span class="badge status-{{ apt.status?.toLowerCase() }}">{{ apt.status }}</span>
+            </div>
+            <div class="apt-actions">
+              @if (apt.status === 'Pending') {
+                <button class="btn-confirm" (click)="updateStatus(apt.id, 'Confirmed')">Confirm</button>
+              }
+              @if (apt.status === 'Confirmed') {
+                <button class="btn-checkin" (click)="updateStatus(apt.id, 'Arrived')">Check In</button>
+              }
+              @if (apt.status === 'Arrived') {
+                <button class="btn-start" (click)="updateStatus(apt.id, 'In_consultation')">Start</button>
+              }
+              @if (apt.status === 'In_consultation') {
+                <button class="btn-complete" (click)="updateStatus(apt.id, 'Completed')">Complete</button>
+              }
+              <button class="btn-delete" (click)="deleteAppointment(apt.id)">🗑️</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

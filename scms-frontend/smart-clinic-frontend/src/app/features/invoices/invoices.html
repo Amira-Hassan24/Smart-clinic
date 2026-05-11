@@ -1,0 +1,97 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+      <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+      <a class="nav-item" routerLink="/doctors">👨‍⚕️ Doctors</a>
+      <a class="nav-item" routerLink="/patients">🧑‍🤝‍🧑 Patients</a>
+      <a class="nav-item" routerLink="/prescriptions">💊 Prescriptions</a>
+      <a class="nav-item active" routerLink="/invoices">🧾 Invoices</a>
+    </nav>
+    <a class="logout-btn" routerLink="/login">🚪 Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Invoices</h1>
+        <p>Generate and manage invoices for completed appointments</p>
+      </div>
+      <button class="btn-add" (click)="showAddForm = !showAddForm">
+        ➕ Generate Invoice
+      </button>
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-msg">⚠️ {{ errorMessage }}</div>
+    }
+
+    @if (showAddForm) {
+      <div class="add-form">
+        <h2>Generate New Invoice</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Completed Appointment</label>
+            <select [(ngModel)]="newInvoice.appointmentId">
+              <option [value]="null">Select Appointment</option>
+              @for (apt of appointments; track apt.id) {
+                <option [value]="apt.id">
+                  Appointment #{{ apt.id }} - Patient #{{ apt.patientId }}
+                </option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Amount (EGP)</label>
+            <input type="number" [(ngModel)]="newInvoice.price" placeholder="Enter amount">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" (click)="generateInvoice()">Generate Invoice</button>
+          <button class="btn-cancel" (click)="showAddForm = false">Cancel</button>
+        </div>
+      </div>
+    }
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    } @else {
+      <div class="invoices-list">
+        @if (invoices.length === 0) {
+          <div class="empty-state">
+            <span>🧾</span>
+            <h3>No Invoices Yet</h3>
+            <p>Generate invoices for completed appointments</p>
+          </div>
+        }
+        @for (inv of invoices; track inv.id) {
+          <div class="invoice-card">
+            <div class="inv-icon">🧾</div>
+            <div class="inv-info">
+              <h3>Invoice #{{ inv.id }}</h3>
+              <p>Appointment #{{ inv.appointmentId }}</p>
+              <p class="amount">💰 {{ inv.amount }} EGP</p>
+              <p class="date">📅 {{ inv.createdAt | date:'dd MMM yyyy' }}</p>
+            </div>
+            <div class="inv-status">
+              <span class="badge" [class.paid]="inv.paymentStatus === 'PAID'"
+                    [class.unpaid]="inv.paymentStatus !== 'PAID'">
+                {{ inv.paymentStatus || 'UNPAID' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

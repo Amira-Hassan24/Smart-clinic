@@ -1,0 +1,116 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+      <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+      <a class="nav-item active" routerLink="/doctors">👨‍⚕️ Doctors</a>
+      <a class="nav-item" routerLink="/patients">🧑‍🤝‍🧑 Patients</a>
+      <a class="nav-item" routerLink="/appointments">💊 Prescriptions</a>
+      <a class="nav-item">🧾 Invoices</a>
+      <a class="nav-item">⚙️ Settings</a>
+    </nav>
+    <a class="logout-btn" routerLink="/login">🚪 Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Doctors Management</h1>
+        <p>Manage all doctors in the clinic</p>
+      </div>
+      <button class="btn-add" (click)="showAddForm = !showAddForm">
+        ➕ Add Doctor
+      </button>
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-msg">⚠️ {{ errorMessage }}</div>
+    }
+
+    @if (showAddForm) {
+      <div class="add-form">
+        <h2>Add New Doctor</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" [(ngModel)]="newDoctor.name" placeholder="Doctor name">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="newDoctor.email" placeholder="Email address">
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" [(ngModel)]="newDoctor.phoneNumber" placeholder="Phone number">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" [(ngModel)]="newDoctor.password" placeholder="Password">
+          </div>
+          <div class="form-group">
+            <label>Specialization</label>
+            <input type="text" [(ngModel)]="newDoctor.specialization" placeholder="e.g. Cardiology">
+          </div>
+          <div class="form-group">
+            <label>Consultation Duration (mins)</label>
+            <input type="number" [(ngModel)]="newDoctor.consultationDuration" placeholder="15">
+          </div>
+          <div class="form-group">
+  <label>Specialty</label>
+  <input type="text" [(ngModel)]="newDoctor.specialty" placeholder="e.g. Cardiology">
+</div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" (click)="addDoctor()">Save Doctor</button>
+          <button class="btn-cancel" (click)="showAddForm = false">Cancel</button>
+        </div>
+      </div>
+    }
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading doctors...</p>
+      </div>
+    } @else {
+      <div class="doctors-grid">
+        @if (doctors.length === 0) {
+          <div class="empty-state">
+            <span>👨‍⚕️</span>
+            <h3>No Doctors Found</h3>
+            <p>Add your first doctor to get started</p>
+          </div>
+        }
+        @for (doctor of doctors; track doctor.id) {
+          <div class="doctor-card">
+            <div class="doctor-avatar">👨‍⚕️</div>
+            <div class="doctor-info">
+              <h3>{{ doctor.name }}</h3>
+              <p class="specialization">{{ doctor.specialization || 'General' }}</p>
+              <p class="email">{{ doctor.email }}</p>
+              <p class="phone">{{ doctor.phoneNumber }}</p>
+            </div>
+            <div class="doctor-status">
+              <span class="badge" [class.active]="doctor.isActive" [class.inactive]="!doctor.isActive">
+                {{ doctor.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+            <div class="doctor-actions">
+              <button class="btn-toggle" (click)="toggleStatus(doctor.id, doctor.isActive)">
+                {{ doctor.isActive ? 'Deactivate' : 'Activate' }}
+              </button>
+              <button class="btn-delete" (click)="deleteDoctor(doctor.id)">Delete</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

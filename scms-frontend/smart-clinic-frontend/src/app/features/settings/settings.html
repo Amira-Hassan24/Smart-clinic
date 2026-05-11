@@ -1,0 +1,116 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      @if (role === 'ADMIN') {
+        <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item" routerLink="/doctors">👨‍⚕️ Doctors</a>
+        <a class="nav-item" routerLink="/patients">🧑‍🤝‍🧑 Patients</a>
+        <a class="nav-item" routerLink="/invoices">🧾 Invoices</a>
+        <a class="nav-item active" routerLink="/settings">⚙️ Settings</a>
+      }
+      @if (role === 'DOCTOR') {
+        <a class="nav-item" routerLink="/doctor-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item" routerLink="/prescriptions">💊 Prescriptions</a>
+        <a class="nav-item active" routerLink="/settings">⚙️ Settings</a>
+      }
+      @if (role === 'PATIENT') {
+        <a class="nav-item" routerLink="/patient-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item" routerLink="/prescriptions">💊 Prescriptions</a>
+        <a class="nav-item active" routerLink="/settings">⚙️ Settings</a>
+      }
+      @if (role === 'RECEPTIONIST') {
+        <a class="nav-item" routerLink="/receptionist-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item active" routerLink="/settings">⚙️ Settings</a>
+      }
+    </nav>
+    <button class="logout-btn" (click)="logout()">🚪 Logout</button>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Settings</h1>
+        <p>Manage your account settings</p>
+      </div>
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-msg">⚠️ {{ errorMessage }}</div>
+    }
+
+    <div class="settings-grid">
+      <!-- Change Password -->
+      <div class="settings-card">
+        <div class="card-header">
+          <span class="card-icon">🔐</span>
+          <div>
+            <h2>Change Password</h2>
+            <p>Update your account password</p>
+          </div>
+        </div>
+
+        <form (ngSubmit)="onChangePassword()">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" [(ngModel)]="changePassword.oldPassword"
+              name="oldPassword" placeholder="Enter current password" required>
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" [(ngModel)]="changePassword.newPassword"
+              name="newPassword" placeholder="Min 8 characters" required>
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" [(ngModel)]="changePassword.confirmPassword"
+              name="confirmPassword" placeholder="Repeat new password" required>
+          </div>
+          <button type="submit" class="btn-save" [disabled]="isLoading">
+            {{ isLoading ? 'Saving...' : 'Change Password' }}
+          </button>
+        </form>
+      </div>
+
+      <!-- Account Info -->
+      <div class="settings-card">
+        <div class="card-header">
+          <span class="card-icon">👤</span>
+          <div>
+            <h2>Account Info</h2>
+            <p>Your account details</p>
+          </div>
+        </div>
+
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">Role</span>
+            <span class="info-value role-badge">{{ role }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">User ID</span>
+            <span class="info-value">#{{ userId }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Status</span>
+            <span class="info-value status-active">✅ Active</span>
+          </div>
+        </div>
+
+        <button class="btn-logout" (click)="logout()">
+          🚪 Sign Out
+        </button>
+      </div>
+    </div>
+  </main>
+</div>

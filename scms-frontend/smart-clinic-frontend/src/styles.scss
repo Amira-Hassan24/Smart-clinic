@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
+
+:root {
+  --primary: #0d9488;
+  --primary-dark: #0f766e;
+  --primary-light: #ccfbf1;
+  --accent: #f59e0b;
+  --accent-dark: #d97706;
+  --white: #ffffff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-600: #475569;
+  --gray-800: #1e293b;
+  --shadow: 0 4px 24px rgba(13,148,136,0.10);
+  --shadow-lg: 0 8px 40px rgba(13,148,136,0.18);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(13,148,136,0.3);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(13,148,136,0.4);
+  }
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245,158,11,0.4);
+  }
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 32px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .sidebar {
+  overflow: hidden !important;
+  
+  .sidebar-nav {
+    overflow-y: auto !important;
+    flex: 1 !important;
+    max-height: calc(100vh - 150px) !important;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 4px;
+    }
+  }
+}
+app-dashboard, app-doctors, app-patients, app-appointments, 
+app-prescriptions, app-invoices, app-staff, app-queue,
+app-settings, app-profile, app-schedule, app-notifications,
+app-doctor-dashboard, app-receptionist-dashboard, app-patient-dashboard {
+  .sidebar-nav {
+    overflow-y: auto !important;
+    max-height: calc(100vh - 180px) !important;
+    
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-thumb { 
+      background: rgba(255,255,255,0.3); 
+      border-radius: 4px; 
+    }
+  }
+}
+}

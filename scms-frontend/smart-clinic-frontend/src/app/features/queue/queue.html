@@ -1,0 +1,169 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🏥</span>
+      <span>Smart Clinic</span>
+    </div>
+    <nav class="sidebar-nav">
+      @if (role === 'ADMIN') {
+        <a class="nav-item" routerLink="/dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item" routerLink="/doctors">👨‍⚕️ Doctors</a>
+        <a class="nav-item" routerLink="/patients">🧑‍🤝‍🧑 Patients</a>
+        <a class="nav-item active" routerLink="/queue">🔄 Queue</a>
+      }
+      @if (role === 'DOCTOR') {
+        <a class="nav-item" routerLink="/doctor-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item active" routerLink="/queue">🔄 Queue</a>
+      }
+      @if (role === 'RECEPTIONIST') {
+        <a class="nav-item" routerLink="/receptionist-dashboard">📊 Dashboard</a>
+        <a class="nav-item" routerLink="/appointments">📅 Appointments</a>
+        <a class="nav-item active" routerLink="/queue">🔄 Queue</a>
+      }
+    </nav>
+    <a class="logout-btn" routerLink="/login">🚪 Logout</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Queue Management</h1>
+        <p>Real-time patient queue — auto refresh every 5 seconds</p>
+      </div>
+      <div class="doctor-select">
+        <label>Select Doctor:</label>
+        <select [(ngModel)]="selectedDoctorId" (change)="onDoctorChange()">
+          @for (doctor of doctors; track doctor.id) {
+            <option [value]="doctor.id">{{ doctor.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    @if (successMessage) {
+      <div class="success-msg">✅ {{ successMessage }}</div>
+    }
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading queue...</p>
+      </div>
+    } @else {
+      <div class="queue-stats">
+        <div class="stat-card teal">
+          <span class="stat-icon">👥</span>
+          <div>
+            <h3>{{ queue.length }}</h3>
+            <p>In Queue</p>
+          </div>
+        </div>
+        <div class="stat-card purple">
+          <span class="stat-icon">🏥</span>
+          <div>
+            <h3>{{ todayAppointments.length - queue.length }}</h3>
+            <p>In Consultation</p>
+          </div>
+        </div>
+        <div class="stat-card gold">
+          <span class="stat-icon">⏱️</span>
+          <div>
+            <h3>{{ queue.length * 15 }} min</h3>
+            <p>Est. Total Wait</p>
+          </div>
+        </div>
+        <div class="stat-card blue">
+          <span class="stat-icon">✅</span>
+          <div>
+            <h3>{{ todayAppointments.length }}</h3>
+            <p>Today Total</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="queue-list">
+        <div class="queue-header">
+          <span>#</span>
+          <span>Patient</span>
+          <span>Time</span>
+          <span>Status</span>
+          <span>Est. Wait</span>
+          <span>Actions</span>
+        </div>
+
+        @if (queue.length === 0) {
+          <div class="empty-state">
+            <span>🎉</span>
+            <h3>Queue is Empty!</h3>
+            <p>No patients waiting right now</p>
+          </div>
+        }
+
+        @for (apt of queue; track apt.id; let i = $index) {
+          <div class="queue-item" [class.priority]="apt.isPriority"
+               [class.in-consultation]="apt.status === 'In_consultation'">
+            <div class="queue-number">
+              @if (apt.isPriority) {
+                <span class="priority-badge">🚨</span>
+              } @else {
+                <span>{{ i + 1 }}</span>
+              }
+            </div>
+
+            <div class="patient-info">
+              <h4>Patient #{{ apt.patientId }}</h4>
+              <p>{{ apt.chiefComplaint || 'No complaint' }}</p>
+              <span class="type-tag">{{ apt.appointmentType }}</span>
+            </div>
+
+            <div class="apt-time">
+              {{ apt.appointmentDate | date:'hh:mm a' }}
+            </div>
+
+            <div class="apt-status">
+              <span class="badge badge-{{ apt.status?.toLowerCase() }}">
+                {{ apt.status }}
+              </span>
+            </div>
+
+            <div class="est-wait">
+              @if (apt.status === 'In_consultation') {
+                <span class="in-progress">In Progress</span>
+              } @else {
+                <span>~{{ getEstimatedWait(i) }} min</span>
+              }
+            </div>
+
+           <div class="apt-actions">
+  @if (role === 'RECEPTIONIST' || role === 'ADMIN') {
+    @if (apt.status === 'Confirmed' || apt.status === 'Pending') {
+      <button class="btn-checkin" (click)="checkIn(apt.id)">✅ Check In</button>
+    }
+    @if (apt.status === 'Arrived') {
+      <button class="btn-start" (click)="updateStatus(apt.id, 'In_consultation')">▶️ Start</button>
+    }
+    <button class="btn-cancel" (click)="updateStatus(apt.id, 'Cancelled')">✖️ Cancel</button>
+  }
+
+  @if (role === 'DOCTOR') {
+    @if (apt.status === 'In_consultation') {
+      <button class="btn-complete" (click)="updateStatus(apt.id, 'Completed')">✔️ Complete</button>
+    }
+    @if (apt.status === 'Arrived') {
+      <button class="btn-start" (click)="updateStatus(apt.id, 'In_consultation')">▶️ Start</button>
+    }
+    <button class="btn-cancel" (click)="updateStatus(apt.id, 'Cancelled')">✖️ Cancel</button>
+  }
+
+  @if (role === 'PATIENT') {
+    <span class="view-only">👁️ View Only</span>
+  }
+</div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>
